@@ -1,0 +1,109 @@
+ srun -c 56 bash blacklister.sh &
+INFO: Starting blacklister version:  0.11
+INFO: Aligning with bowtie and samtools BAM conversion. Input:  adapters.fa  Ref:  /lager2/rcug/seqres/metagenref/bowtie2/refSeqs_allKingdoms_2020_03.fa
+
+(base) rcug@hpc-rc09:/mnt/ngsnfs/tools/dev/blacklister$ 154 reads; of these:
+  154 (100.00%) were unpaired; of these:
+    121 (78.57%) aligned 0 times
+    30 (19.48%) aligned exactly 1 time
+    3 (1.95%) aligned >1 times
+21.43% overall alignment rate
+INFO: Started samtools index and idxstats
+INFO: Converting bam to bed
+INFO: Creating masked FASTA output:  /lager2/rcug/seqres/metagenref/bowtie2/refSeqs_allKingdoms_2020_03.fa.masked.fa
+INFO: stats before masking - check Ns
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=172.24.2.50 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=172.24.2.50 -Dhttps.proxyPort=8080
+A       C       G       T       N       IUPAC   Other   GC      GC_stdev
+0.2436  0.2562  0.2564  0.2438  0.0118  0.0001  0.0001  0.5126  0.1355
+
+Main genome scaffold total:             2693
+Main genome contig total:               3400
+Main genome scaffold sequence total:    12990.579 MB
+Main genome contig sequence total:      12837.165 MB    1.181% gap
+Main genome scaffold N/L50:             533/5.111 MB
+Main genome contig N/L50:               632/4.991 MB
+Main genome scaffold N/L90:             13/133.275 MB
+Main genome contig N/L90:               35/27.635 MB
+Max scaffold length:                    248.956 MB
+Max contig length:                      141.414 MB
+Number of scaffolds > 50 KB:            2647
+% main genome in scaffolds > 50 KB:     99.99%
+
+
+Minimum         Number          Number          Total           Total           Scaffold
+Scaffold        of              of              Scaffold        Contig          Contig
+Length          Scaffolds       Contigs         Length          Length          Coverage
+--------        --------------  --------------  --------------  --------------  --------
+    All                  2,693           3,400  12,990,578,665  12,837,164,818    98.82%
+   1 KB                  2,693           3,400  12,990,578,665  12,837,164,818    98.82%
+ 2.5 KB                  2,689           3,396  12,990,569,854  12,837,156,007    98.82%
+   5 KB                  2,682           3,389  12,990,541,852  12,837,128,005    98.82%
+  10 KB                  2,672           3,379  12,990,480,176  12,837,066,329    98.82%
+  25 KB                  2,669           3,376  12,990,425,046  12,837,011,200    98.82%
+  50 KB                  2,647           3,354  12,989,536,492  12,836,122,649    98.82%
+ 100 KB                  2,642           3,349  12,989,204,553  12,835,790,710    98.82%
+ 250 KB                  2,629           3,336  12,986,989,545  12,833,575,703    98.82%
+ 500 KB                  2,622           3,329  12,984,689,909  12,831,276,069    98.82%
+   1 MB                  2,521           3,228  12,903,049,946  12,749,636,187    98.81%
+ 2.5 MB                  1,945           2,652  11,820,277,983  11,666,864,337    98.70%
+   5 MB                    577           1,284   6,719,485,093   6,566,072,388    97.72%
+  10 MB                     48             755   3,358,379,931   3,204,970,523    95.43%
+  25 MB                     24             731   3,088,269,832   2,934,860,425    95.03%
+  50 MB                     23             684   3,041,559,849   2,894,771,806    95.17%
+ 100 MB                     16             414   2,556,483,112   2,464,774,907    96.41%
+
+INFO: stats after masking - check Ns
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=172.24.2.50 -Dhttp.proxyPort=8080 -Dhttps.proxyHost=172.24.2.50 -Dhttps.proxyPort=8080
+A       C       G       T       N       IUPAC   Other   GC      GC_stdev
+0.2436  0.2562  0.2564  0.2438  0.0118  0.0001  0.0001  0.5126  0.1355
+
+Main genome scaffold total:             2693
+Main genome contig total:               3407
+Main genome scaffold sequence total:    12990.579 MB
+Main genome contig sequence total:      12837.165 MB    1.181% gap
+Main genome scaffold N/L50:             533/5.111 MB
+Main genome contig N/L50:               633/4.986 MB
+Main genome scaffold N/L90:             13/133.275 MB
+Main genome contig N/L90:               35/27.635 MB
+Max scaffold length:                    248.956 MB
+Max contig length:                      141.414 MB
+Number of scaffolds > 50 KB:            2647
+% main genome in scaffolds > 50 KB:     99.99%
+
+
+Minimum         Number          Number          Total           Total           Scaffold
+Scaffold        of              of              Scaffold        Contig          Contig
+Length          Scaffolds       Contigs         Length          Length          Coverage
+--------        --------------  --------------  --------------  --------------  --------
+    All                  2,693           3,407  12,990,578,665  12,837,164,564    98.82%
+   1 KB                  2,693           3,407  12,990,578,665  12,837,164,564    98.82%
+ 2.5 KB                  2,689           3,403  12,990,569,854  12,837,155,753    98.82%
+   5 KB                  2,682           3,396  12,990,541,852  12,837,127,751    98.82%
+  10 KB                  2,672           3,386  12,990,480,176  12,837,066,075    98.82%
+  25 KB                  2,669           3,383  12,990,425,046  12,837,010,946    98.82%
+  50 KB                  2,647           3,361  12,989,536,492  12,836,122,395    98.82%
+ 100 KB                  2,642           3,356  12,989,204,553  12,835,790,456    98.82%
+ 250 KB                  2,629           3,343  12,986,989,545  12,833,575,449    98.82%
+ 500 KB                  2,622           3,336  12,984,689,909  12,831,275,815    98.82%
+   1 MB                  2,521           3,235  12,903,049,946  12,749,635,933    98.81%
+ 2.5 MB                  1,945           2,659  11,820,277,983  11,666,864,083    98.70%
+   5 MB                    577           1,288   6,719,485,093   6,566,072,201    97.72%
+  10 MB                     48             755   3,358,379,931   3,204,970,523    95.43%
+  25 MB                     24             731   3,088,269,832   2,934,860,425    95.03%
+  50 MB                     23             684   3,041,559,849   2,894,771,806    95.17%
+ 100 MB                     16             414   2,556,483,112   2,464,774,907    96.41%
+
+INFO: Number of lines in files. Only regions in bed file are used for masking !
+2852 bt.test.sam
+INFO: Number of lines in SAM file without headers
+158
+INFO: Number of lines in output bed file, should be very similar to above line!
+36 bt.test.s.bam.bed
+INFO: Number of lines with 3 Ns NNN before masking
+2557953
+INFO: Number of lines with 3 Ns NNN after masking
+2557963
+INFO: Blacklister complete
+
+[1]+  Done                    srun -c 56 bash blacklister.sh
+
