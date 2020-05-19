@@ -1,6 +1,6 @@
 # blacklister
  * Blacklist and mask regions in a metagenome using a user-supplied fasta file.
- * Eg Mask Illumina adapters in bad bacterial genomes.
+ * Eg Mask Illumina adapters in bad bacterial genomes (Achromobacter is fun!).
 
 
 
