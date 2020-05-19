@@ -16,6 +16,7 @@ See blacklister.sh for examples and a workflow.
   Requires only following tools in PATH
   * bowtie2 (tested with v2.3.4.3)
   * bedtools (v2.26 tested)
+  * bbmap (for readlength.sh stats output)
   
 
 
@@ -27,8 +28,20 @@ See blacklister.sh for examples and a workflow.
   # Now run directly:
   bash blacklister.sh
   # Or run via SLURM scheduler if available
-  srun -c 56 bash blacklister.sh
+  srun -c 12 bash blacklister.sh
 ```
+
+## Output
+* SAM file of alignment (usual small as input, eg, adapter fasta file or UniVec DB, are quite small)
+* BAM file of alignment (temporary, converted to BED to be used for masking)
+* BED file of alignment (used for bedtools maskfasta)
+* N-masked multi-fasta file. Filename: input.fa.masked.fa. Created in the same location as the input reference file to be masked, not in the local directory.
+* Statistics (on standard out). Number of masked lines in reference (containing 3 Ns or more) before and after masking. Also number of chromosomes input and output (via bbmap readlength.sh)
+
+
+
+
+## Notes:
 
 ### masking commands to extract and check masked genomes
 ```
