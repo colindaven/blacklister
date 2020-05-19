@@ -1,22 +1,32 @@
 # blacklister
- * Blacklist and mask regions in a metagenome using a user-supplied fasta file.
+ * Blacklist (mask with N) regions in a metagenome using a user-supplied fasta file
  * Eg Mask Illumina adapters in bad bacterial genomes (Achromobacter is fun!).
+ * Very simple alternative to RepeatMasker without the complexity (and features)
 
 
-
+Process:
   * bowtie2 with --all parameter shows all alignments much better than bwa mem. Use bowtie2.
   * bedtools does the conversion BAM to bed
   * bedtools fasta masking using the bed
 
 
-See blacklister.sh for examples and a workflow. Might be sufficient ?
+See blacklister.sh for examples and a workflow. 
+
+## Installation
+  Requires only following tools in PATH
+  * bowtie2 (tested with v2.3.4.3)
+  * bedtools (v2.26 tested)
+  
+
 
 ## How to run
 
 ```
-  # First adjust input and reference in script. 
+  # First change input file, reference and number of threads used in script. 
   # Reference FASTA needs a bowtie2 index, build if needed (takes 5+hours for big genomes)
-  # Now run
+  # Now run directly:
+  bash blacklister.sh
+  # Or run via SLURM scheduler if available
   srun -c 56 bash blacklister.sh
 ```
 
