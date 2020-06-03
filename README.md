@@ -30,6 +30,9 @@ See blacklister.sh for examples and a workflow.
   # Or run via SLURM scheduler if available
   srun -c 12 bash blacklister.sh
 ```
+## Input
+* Fasta file of reference sequences to be masked (reference genome or metagenome)
+* Fasta file of contaminant sequences to be masked (with Ns) in the reference genome (if and where these contaminants align)
 
 ## Output
 * SAM file of alignment (usual small as input, eg, adapter fasta file or UniVec DB, are quite small)
