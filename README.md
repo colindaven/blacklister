@@ -1,5 +1,5 @@
 # blacklister
- * Blacklist (mask with N) regions in a metagenome using a user-supplied fasta file
+ * Blacklist (mask with N) regions in a metagenome (multi-FASTA file) to which a user-supplied fasta file (adapters) were aligned 
  * Eg Mask Illumina adapters in bad bacterial genomes (Achromobacter is fun!).
  * Very simple alternative to RepeatMasker without the complexity (and features)
 
