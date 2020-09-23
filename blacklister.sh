@@ -1,7 +1,13 @@
 #!/bin/bash
 # Colin Davenport, May 2020
 # BlackLister script: masks dodgy sequences such as adapters in reference multifasta sequences like metagenomes
-# Run as srun -c 56 bash blacklister.sh
+# First change input file, reference and number of threads used in script. 
+# Reference FASTA needs a bowtie2 index, build if needed (takes 5+hours for big genomes)
+# Now run directly:
+# bash blacklister.sh
+# Or run via SLURM scheduler if available
+# srun -c 12 bash blacklister.sh
+
 
 version=0.11
 
