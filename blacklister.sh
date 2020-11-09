@@ -9,7 +9,7 @@
 # srun -c 12 bash blacklister.sh
 
 
-version=0.11
+version=0.12
 
 ## Modify this section
 thr=56
