@@ -1,5 +1,5 @@
 # blacklister
- * Blacklist (mask with N) regions in a metagenome using a user-supplied fasta file
+ * Blacklist (mask with N) regions in a metagenome (multi-FASTA file) to which a user-supplied fasta file (adapters) were aligned 
  * Eg Mask Illumina adapters in bad bacterial genomes (Achromobacter is fun!).
  * Very simple alternative to RepeatMasker without the complexity (and features)
 
@@ -46,8 +46,8 @@ See blacklister.sh for examples and a workflow.
 
 ## Notes:
 
-### masking commands to extract and check masked genomes
 ```
+  ### masking commands to extract and check masked genomes
   samtools faidx 2sp_univec.fa.masked.fa 1_CP015639_1_Pseudomonas_lurida_strain_L228_chromosome__complete_genome_BAC > lu_masked.fa
   samtools faidx 2sp_univec.fa.masked.fa 1_CP006958_1_UNVERIFIED__Achromobacter_xylosoxidans_NBRC_15126___ATCC_27061__complete_genome_BAC > achrom_masked.fa
 

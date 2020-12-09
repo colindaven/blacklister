@@ -1,9 +1,15 @@
 #!/bin/bash
 # Colin Davenport, May 2020
 # BlackLister script: masks dodgy sequences such as adapters in reference multifasta sequences like metagenomes
-# Run as srun -c 56 bash blacklister.sh
+# First change input file, reference and number of threads used in script. 
+# Reference FASTA needs a bowtie2 index, build if needed (takes 5+hours for big genomes)
+# Now run directly:
+# bash blacklister.sh
+# Or run via SLURM scheduler if available
+# srun -c 12 bash blacklister.sh
 
-version=0.11
+
+version=0.12
 
 ## Modify this section
 thr=56
@@ -25,10 +31,12 @@ input=/lager2/rcug/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #input=test/UniVec_Core2_cln.fasta
 
 
-
+#############
 ## Do not change from here on !
+#############
 
 ## Changelog
+# 0.12 - expand docs and formatting
 # 0.11 - add bowtie2 refSeqs_allKingdoms_201910_3.fasta index
 # 0.10 - first commits
 
@@ -41,6 +49,7 @@ input=/lager2/rcug/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #samtools view -h test.s.bam > test.sam
 
 echo "INFO: Starting blacklister version: " $version
+echo "INFO: Requires samtools, bedtools  (and optionally grep, and stats.sh from bbmap) in PATH "
 
 # bowtie2
 echo "INFO: Aligning with bowtie and samtools BAM conversion. Input: " $input " Ref: "  $ref
@@ -70,8 +79,10 @@ echo "INFO: stats after masking - check Ns"
 stats.sh $ref.masked.fa
 
 
+##########
+# Checks and statistics
+#########
 
-# Checks
 echo "INFO: Number of lines in files. Only regions in bed file are used for masking ! "
 wc -l *.sam
 echo "INFO: Number of lines in SAM file without headers "
