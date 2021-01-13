@@ -3,6 +3,7 @@
  * Eg Mask Illumina adapters in bad bacterial genomes (Achromobacter is fun!).
  * Very simple alternative to RepeatMasker without the complexity (and features)
 
+Author: Colin Davenport, Hannover Medical School
 
 Process:
   * bowtie2 with --all parameter shows all alignments much better than bwa mem. Use bowtie2.
