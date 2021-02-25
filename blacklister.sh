@@ -1,8 +1,8 @@
 #!/bin/bash
 # Colin Davenport, May 2020
 # BlackLister script: masks dodgy sequences such as adapters in reference multifasta sequences like metagenomes
-# First change input file, reference and number of threads used in script. 
-# Reference FASTA needs a bowtie2 index, build if needed (takes 5+hours for big genomes)
+# First change input file, reference and number of threads used in script.
+# Reference FASTA needs a bowtie2 index, you must manually build this prior to running blacklister (takes 5+hours for big genomes)
 # Now run directly:
 # bash blacklister.sh
 # Or run via SLURM scheduler if available
@@ -11,7 +11,9 @@
 
 version=0.12
 
-## Modify this section
+############
+## Users: Modify this section
+############
 thr=56
 # Reference
 
@@ -32,7 +34,7 @@ input=/lager2/rcug/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 
 
 #############
-## Do not change from here on !
+## Users: Do not change from here on !
 #############
 
 ## Changelog
@@ -87,7 +89,7 @@ echo "INFO: Number of lines in files. Only regions in bed file are used for mask
 wc -l *.sam
 echo "INFO: Number of lines in SAM file without headers "
 grep -v "@SQ" *.sam | grep -v "@PG" | wc -l
-echo "INFO: Number of lines in output bed file, should be very similar to above line! "
+echo "INFO: Number of lines in output bed file, should be very similar to above line (exception - no SAM header)! "
 wc -l *.bed
 
 echo "INFO: Number of lines with 3 Ns NNN before masking "
