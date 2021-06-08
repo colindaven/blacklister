@@ -1,5 +1,5 @@
 #!/bin/bash
-# Colin Davenport, May 2020
+# Colin Davenport, May 2020 - June 2021
 # BlackLister script: masks dodgy sequences such as adapters in reference multifasta sequences like metagenomes
 # First change input file, reference and number of threads used in script.
 # Reference FASTA needs a bowtie2 index, you must manually build this prior to running blacklister (takes 5+hours for big genomes)
@@ -9,7 +9,7 @@
 # srun -c 12 bash blacklister.sh
 
 
-version=0.12
+version=0.13
 
 ############
 ## Users: Modify this section
@@ -29,7 +29,7 @@ ref=/lager2/rcug/seqres/metagenref/bowtie2/refSeqs_allKingdoms_2020_03.fa
 
 # Input FASTA adapters
 #input=adapters.fa
-input=/lager2/rcug/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
+input=/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #input=test/UniVec_Core2_cln.fasta
 
 
@@ -38,6 +38,7 @@ input=/lager2/rcug/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #############
 
 ## Changelog
+# 0.13 - update ref seq locations and docs
 # 0.12 - expand docs and formatting
 # 0.11 - add bowtie2 refSeqs_allKingdoms_201910_3.fasta index
 # 0.10 - first commits

@@ -39,7 +39,7 @@ See blacklister.sh for examples and a workflow.
 * SAM file of alignment (usual small as input, eg, adapter fasta file or UniVec DB, are quite small)
 * BAM file of alignment (temporary, converted to BED to be used for masking)
 * BED file of alignment (used for bedtools maskfasta)
-* N-masked multi-fasta file. Filename: input.fa.masked.fa. Created in the same location as the input reference file to be masked, not in the local directory.
+* N-masked multi-fasta file. Filename: input.fa.masked.fa. Created in the same location as the input reference file to be masked (where the bowtie2 index is), NOT in the local directory !
 * Statistics (on standard out). Number of masked lines in reference (containing 3 Ns or more) before and after masking. Also number of chromosomes input and output (via bbmap readlength.sh)
 
 
