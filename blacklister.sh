@@ -7,7 +7,7 @@
 # Now run Blacklister directly:
 # bash blacklister.sh
 # Or run via SLURM scheduler if available
-# srun -c 12 bash blacklister.sh
+# srun -c 24 bash blacklister.sh
 
 
 version=0.14
@@ -15,7 +15,7 @@ version=0.14
 ############
 ## Users: Modify this section
 ############
-thr=56
+thr=24
 
 # Put the Reference (needs a bowtie2index) to blacklist here, or supply it as the first command list argument.
 ref=$1
