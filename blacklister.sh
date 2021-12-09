@@ -10,7 +10,7 @@
 # srun -c 24 bash blacklister.sh
 
 
-version=0.14
+version=0.15
 
 ############
 ## Users: Modify this section
@@ -29,9 +29,9 @@ ref=$1
 #ref=test/2sp_univec.fa
 
 
-# Input FASTA adapters
-#input=adapters.fa
-input=/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
+# Input FASTA adapters. adapters.fa only recommended.
+input=adapters.fa
+#input=/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #input=test/UniVec_Core2_cln.fasta
 
 
@@ -40,6 +40,7 @@ input=/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta
 #############
 
 ## Changelog
+# 0.15 - only extract mapped reads to SAM
 # 0.14 - Improve docs, add ref as cmd line arg
 # 0.13 - update ref seq locations and docs
 # 0.12 - expand docs and formatting
@@ -64,7 +65,8 @@ bowtie2 -p $thr --all -f -x $ref -U $input  | samtools view -@ 8 -bhS - | samtoo
 echo "INFO: Started samtools index and idxstats"
 samtools index bt.test.s.bam
 samtools idxstats bt.test.s.bam > bt.test.s.bam.txt
-samtools view -h bt.test.s.bam > bt.test.sam
+# only extract mapped reads to SAM
+samtools view -h -F 0x04 bt.test.s.bam > bt.test.sam
 
 
 # bedtools
@@ -93,7 +95,7 @@ echo "INFO: Number of lines in files. Only regions in bed file are used for mask
 wc -l *.sam
 echo "INFO: Number of lines in SAM file without headers "
 grep -v "@SQ" *.sam | grep -v "@PG" | wc -l
-echo "INFO: Number of lines in output bed file, should be very similar to above line (exception - no SAM header)! "
+echo "INFO: Number of lines in output bed file, should be very similar to above line"
 wc -l *.bed
 
 echo "INFO: Number of lines with 3 Ns NNN before masking "
