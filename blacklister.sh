@@ -94,7 +94,7 @@ stats.sh $ref.masked.fa
 echo "INFO: Number of lines in files. Only regions in bed file are used for masking ! "
 wc -l *.sam
 echo "INFO: Number of lines in SAM file without headers "
-grep -v "@SQ" *.sam | grep -v "@PG" | wc -l
+grep -v "@SQ" *.sam | grep -v "@PG" | grep -v "@HD" | wc -l
 echo "INFO: Number of lines in output bed file, should be very similar to above line"
 wc -l *.bed
 
