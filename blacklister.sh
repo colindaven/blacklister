@@ -16,7 +16,7 @@ set -euo pipefail  # Exit on error, undefined vars, pipe failures
 # VERSION & CONFIGURATION
 ################################################################################
 
-readonly SCRIPT_VERSION="0.15"
+readonly SCRIPT_VERSION="0.16"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -40,8 +40,9 @@ THREADS=24
 REFERENCE_FASTA="${1:-}"
 
 # Input FASTA file with contaminant sequences to mask
+# Can be supplied as second command-line argument
 # Examples: adapters, UniVec_Core.fasta, vector sequences
-CONTAMINANT_FASTA="/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta"
+CONTAMINANT_FASTA="${2:-/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Core.fasta}"
 
 ################################################################################
 # HELPER FUNCTIONS
@@ -105,8 +106,11 @@ validate_inputs() {
     # Check reference file
     if [[ -z "$REFERENCE_FASTA" ]]; then
         log_error "Reference FASTA not specified!"
-        log_error "Usage: $SCRIPT_NAME <reference.fa>"
-        log_error "Or edit the script and set REFERENCE_FASTA variable"
+        log_error "Usage: $SCRIPT_NAME <reference.fa> [contaminants.fa]"
+        log_error ""
+        log_error "Examples:"
+        log_error "  bash $SCRIPT_NAME genome.fa adapters.fa"
+        log_error "  bash $SCRIPT_NAME /path/to/ref.fa /path/to/univec.fa"
         return 1
     fi
     
@@ -119,13 +123,20 @@ validate_inputs() {
     local index_base=$(echo "$REFERENCE_FASTA" | sed 's/\.[^.]*$//')
     if ! file_exists "${index_base}.1.bt2"; then
         log_error "bowtie2 index not found for: $REFERENCE_FASTA"
-        log_error "Build the index with: bowtie2-build -f $REFERENCE_FASTA $index_base"
+        log_error ""
+        log_error "Build the index with:"
+        log_error "  bowtie2-build -f $REFERENCE_FASTA $index_base"
         return 1
     fi
     
     # Check contaminant file
     if ! file_exists "$CONTAMINANT_FASTA"; then
         log_error "Contaminant FASTA file not found: $CONTAMINANT_FASTA"
+        log_error ""
+        log_error "Provide as second argument:"
+        log_error "  bash $SCRIPT_NAME $REFERENCE_FASTA /path/to/contaminants.fa"
+        log_error ""
+        log_error "Or edit the CONTAMINANT_FASTA variable in this script"
         return 1
     fi
     
@@ -263,9 +274,9 @@ main() {
     log_section "STEP 1: Aligning contaminants to reference"
     log_info "Command: bowtie2 -p $THREADS --all -f -x $REFERENCE_FASTA -U $CONTAMINANT_FASTA"
     
-    if bowtie2 -p "$THREADS" --all -f -x "$REFERENCE_FASTA" -U "$CONTAMINANT_FASTA" 2>/dev/null \
-        | samtools view -@ 8 -bhS - 2>/dev/null \
-        | samtools sort - 2>/dev/null > "$BAM_FILE"; then
+    if bowtie2 -p "$THREADS" --all -f -x "$REFERENCE_FASTA" -U "$CONTAMINANT_FASTA" 2>&1 \
+        | samtools view -@ 8 -bhS - 2>&1 \
+        | samtools sort - 2>&1 > "$BAM_FILE"; then
         log_info "Alignment completed successfully ✓"
     else
         log_error "Alignment failed!"
@@ -274,7 +285,7 @@ main() {
     
     # Index BAM file
     log_info "Indexing BAM file..."
-    if samtools index "$BAM_FILE" 2>/dev/null; then
+    if samtools index "$BAM_FILE" 2>&1; then
         log_info "BAM indexing completed ✓"
     else
         log_error "BAM indexing failed!"
@@ -283,18 +294,18 @@ main() {
     
     # Generate statistics
     log_info "Generating BAM statistics..."
-    samtools idxstats "$BAM_FILE" > "${OUTPUT_PREFIX}.idxstats" 2>/dev/null
+    samtools idxstats "$BAM_FILE" > "${OUTPUT_PREFIX}.idxstats" 2>&1
     
     # Export to SAM for inspection
     log_info "Exporting to SAM format..."
-    samtools view -h "$BAM_FILE" > "$SAM_FILE" 2>/dev/null
+    samtools view -h "$BAM_FILE" > "$SAM_FILE" 2>&1
     log_info ""
     
     # STEP 2: Convert BAM to BED
     log_section "STEP 2: Converting alignment to BED format"
     log_info "Command: bedtools bamtobed -i $BAM_FILE"
     
-    if bedtools bamtobed -ed -i "$BAM_FILE" > "$BED_FILE" 2>/dev/null; then
+    if bedtools bamtobed -ed -i "$BAM_FILE" > "$BED_FILE" 2>&1; then
         local bed_regions=$(wc -l < "$BED_FILE")
         log_info "BED conversion completed ✓"
         log_info "Alignment regions: $bed_regions"
@@ -310,7 +321,7 @@ main() {
     log_info "Output file: $masked_output"
     log_info "Command: bedtools maskfasta -fi $REFERENCE_FASTA -bed $BED_FILE"
     
-    if bedtools maskfasta -fi "$REFERENCE_FASTA" -bed "$BED_FILE" -fo "$masked_output" 2>/dev/null; then
+    if bedtools maskfasta -fi "$REFERENCE_FASTA" -bed "$BED_FILE" -fo "$masked_output" 2>&1; then
         log_info "Masking completed successfully ✓"
     else
         log_error "Masking failed!"
