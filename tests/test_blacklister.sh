@@ -197,15 +197,20 @@ test_blacklister_execution() {
     log_section "TEST SUITE 4: blacklister Execution"
     
     log_info "Running blacklister workflow..."
+    log_info "Command: bash $PROJECT_DIR/blacklister.sh $REFERENCE_TEST $UNIVEC_FILE"
     
-    if bash "$PROJECT_DIR/blacklister.sh" "$REFERENCE_TEST" >/dev/null 2>&1; then
+    TESTS_RUN=$((TESTS_RUN + 1))
+    
+    if bash "$PROJECT_DIR/blacklister.sh" "$REFERENCE_TEST" "$UNIVEC_FILE" >/dev/null 2>&1; then
         log_success "blacklister executed without errors"
         TESTS_PASSED=$((TESTS_PASSED + 1))
-        TESTS_RUN=$((TESTS_RUN + 1))
     else
         log_fail "blacklister execution failed"
+        log_info "Debug info:"
+        log_info "  Reference exists: $(test -f "$REFERENCE_TEST" && echo "yes" || echo "no")"
+        log_info "  Contaminants exist: $(test -f "$UNIVEC_FILE" && echo "yes" || echo "no")"
+        log_info "  Reference index exists: $(test -f "${REFERENCE_TEST%.fa}.1.bt2" && echo "yes" || echo "no")"
         TESTS_FAILED=$((TESTS_FAILED + 1))
-        TESTS_RUN=$((TESTS_RUN + 1))
         return 1
     fi
 }
@@ -364,8 +369,9 @@ main() {
         log_info ""
         log_info "Debugging tips:"
         log_info "  - Check work directory: ls -la $WORK_DIR"
-        log_info "  - Check for errors: grep -i error $WORK_DIR/*.log"
-        log_info "  - Run blacklister manually: bash $PROJECT_DIR/blacklister.sh $REFERENCE_TEST"
+        log_info "  - Check for errors: bash $PROJECT_DIR/blacklister.sh $REFERENCE_TEST $UNIVEC_FILE"
+        log_info "  - Check file permissions: ls -la $REFERENCE_TEST $UNIVEC_FILE"
+        log_info "  - Check bowtie2 index: ls -la ${work_index_base}.*.bt2"
         log_info ""
         return 1
     fi
