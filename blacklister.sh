@@ -16,7 +16,7 @@ set -euo pipefail  # Exit on error, undefined vars, pipe failures
 # VERSION & CONFIGURATION
 ################################################################################
 
-readonly SCRIPT_VERSION="0.16"
+readonly SCRIPT_VERSION="0.17"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -79,6 +79,13 @@ file_exists() {
     [[ -f "$1" && -r "$1" ]]
 }
 
+# Get bowtie2 index basename (removes extension)
+get_bowtie2_index_basename() {
+    local ref_file="$1"
+    # Remove trailing extension (.fa, .fasta, etc.)
+    echo "${ref_file%.*}"
+}
+
 # Validate dependencies
 check_dependencies() {
     local missing_tools=()
@@ -120,12 +127,13 @@ validate_inputs() {
     fi
     
     # Check bowtie2 index
-    local index_base=$(echo "$REFERENCE_FASTA" | sed 's/\.[^.]*$//')
-    if ! file_exists "${index_base}.1.bt2"; then
+    # Index basename is the reference path without extension
+    local index_basename=$(get_bowtie2_index_basename "$REFERENCE_FASTA")
+    if ! file_exists "${index_basename}.1.bt2"; then
         log_error "bowtie2 index not found for: $REFERENCE_FASTA"
         log_error ""
         log_error "Build the index with:"
-        log_error "  bowtie2-build -f $REFERENCE_FASTA $index_base"
+        log_error "  bowtie2-build -f $REFERENCE_FASTA $index_basename"
         return 1
     fi
     
@@ -264,22 +272,28 @@ main() {
     check_dependencies || exit 1
     validate_inputs || exit 1
     
+    # Get bowtie2 index basename (without .fa extension)
+    local index_basename=$(get_bowtie2_index_basename "$REFERENCE_FASTA")
+    
     # Determine reference directory for output
     local ref_dir=$(dirname "$(cd "$(dirname "$REFERENCE_FASTA")" && pwd -P)/$(basename "$REFERENCE_FASTA")")
     local ref_base=$(basename "$REFERENCE_FASTA")
     log_info "Output directory: $ref_dir"
+    log_info "bowtie2 index basename: $index_basename"
     log_info ""
     
     # STEP 1: Alignment with bowtie2
     log_section "STEP 1: Aligning contaminants to reference"
-    log_info "Command: bowtie2 -p $THREADS --all -f -x $REFERENCE_FASTA -U $CONTAMINANT_FASTA"
+    log_info "Command: bowtie2 -p $THREADS --all -f -x $index_basename -U $CONTAMINANT_FASTA"
     
-    if bowtie2 -p "$THREADS" --all -f -x "$REFERENCE_FASTA" -U "$CONTAMINANT_FASTA" 2>&1 \
+    if bowtie2 -p "$THREADS" --all -f -x "$index_basename" -U "$CONTAMINANT_FASTA" 2>&1 \
         | samtools view -@ 8 -bhS - 2>&1 \
         | samtools sort - 2>&1 > "$BAM_FILE"; then
         log_info "Alignment completed successfully ✓"
     else
         log_error "Alignment failed!"
+        log_error "Make sure bowtie2 index exists:"
+        log_error "  ls -lh ${index_basename}.*.bt2"
         return 1
     fi
     
