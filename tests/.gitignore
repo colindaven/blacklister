@@ -1,0 +1,28 @@
+# Test data (large files, not committed)
+*.fasta
+*.fna
+*.fa
+*.gz
+
+# bowtie2 index files
+*.bt2
+*.rev.bt2
+
+# Alignment output
+*.bam
+*.bam.bai
+*.sam
+*.bed
+
+# Statistics and logs
+*.stats.txt
+*.idxstats
+*.log
+
+# Work directory
+work/
+
+# Temporary files
+*.tmp
+*.temp
+*~
