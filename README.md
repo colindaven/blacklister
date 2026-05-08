@@ -1,6 +1,6 @@
 # blacklister
 
-A simple tool to mask (replace with N) regions in metagenomic sequences where contaminant sequences (e.g., Illumina adapters, vector contamination) align.
+A simple tool to mask (replace with N) regions in genomic or metagenomic sequences where contaminant sequences (e.g., Illumina adapters, vector contamination) align.
 
 **Use case:** Clean up metagenomic reference sequences or genome assemblies by masking adapter sequences, UniVec contamination, or other known problematic sequences.
 
