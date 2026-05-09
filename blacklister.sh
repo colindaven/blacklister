@@ -48,6 +48,18 @@ CONTAMINANT_FASTA="${2:-/mnt/ngsnfs/seqres/contaminants/2020_02/univec/UniVec_Co
 # HELPER FUNCTIONS
 ################################################################################
 
+# Convert relative path to absolute path
+to_absolute_path() {
+    local path="$1"
+    if [[ "$path" = /* ]]; then
+        # Already absolute
+        echo "$path"
+    else
+        # Relative - convert to absolute
+        echo "$(cd "$(dirname "$path")" && pwd)/$(basename "$path")"
+    fi
+}
+
 # Print colored output messages
 log_info() {
     echo "[INFO $(date '+%Y-%m-%d %H:%M:%S')] $*"
@@ -262,6 +274,10 @@ main() {
     
     log_section "blacklister v${SCRIPT_VERSION} - Contamination Masking Tool"
     
+    # Convert to absolute paths
+    REFERENCE_FASTA=$(to_absolute_path "$REFERENCE_FASTA")
+    CONTAMINANT_FASTA=$(to_absolute_path "$CONTAMINANT_FASTA")
+    
     log_info "Starting blacklister workflow"
     log_info "Threads: $THREADS"
     log_info "Reference: $REFERENCE_FASTA"
@@ -294,6 +310,9 @@ main() {
         log_error "Alignment failed!"
         log_error "Make sure bowtie2 index exists:"
         log_error "  ls -lh ${index_basename}.*.bt2"
+        log_error ""
+        log_error "And contaminant file exists:"
+        log_error "  ls -lh $CONTAMINANT_FASTA"
         return 1
     fi
     
