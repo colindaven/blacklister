@@ -33,7 +33,7 @@ readonly STATS_FILE="${OUTPUT_PREFIX}.stats.txt"
 ################################################################################
 
 # Number of threads for bowtie2
-THREADS=24
+THREADS=8
 
 # Reference FASTA file (must have bowtie2 index)
 # Can be supplied as first command-line argument
@@ -327,7 +327,7 @@ main() {
     
     # Convert SAM to BAM
     log_info "Converting SAM to BAM format..."
-    if samtools view -@ 8 -bhS "$SAM_FILE" > "$BAM_FILE" 2>&1; then
+    if samtools view -@ 8 -bh -o "$BAM_FILE" "$SAM_FILE"  2>&1; then
         log_info "SAM to BAM conversion completed ✓"
     else
         log_error "SAM to BAM conversion failed!"
