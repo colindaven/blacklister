@@ -16,7 +16,7 @@ set -euo pipefail  # Exit on error, undefined vars, pipe failures
 # VERSION & CONFIGURATION
 ################################################################################
 
-readonly SCRIPT_VERSION="0.17"
+readonly SCRIPT_VERSION="0.18"
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -302,17 +302,36 @@ main() {
     log_section "STEP 1: Aligning contaminants to reference"
     log_info "Command: bowtie2 -p $THREADS --all -f -x $index_basename -U $CONTAMINANT_FASTA"
     
-    if bowtie2 -p "$THREADS" --all -f -x "$index_basename" -U "$CONTAMINANT_FASTA" 2>&1 \
-        | samtools view -@ 8 -bhS - 2>&1 \
-        | samtools sort - 2>&1 > "$BAM_FILE"; then
-        log_info "Alignment completed successfully ✓"
+    # Write SAM first, then convert to BAM
+    # This separates the bowtie2 and samtools steps for better error handling
+    log_info "Writing alignments to SAM format..."
+    if bowtie2 -p "$THREADS" --all -f -x "$index_basename" -U "$CONTAMINANT_FASTA" > "$SAM_FILE" 2>&1; then
+        log_info "bowtie2 alignment completed ✓"
     else
-        log_error "Alignment failed!"
-        log_error "Make sure bowtie2 index exists:"
-        log_error "  ls -lh ${index_basename}.*.bt2"
-        log_error ""
-        log_error "And contaminant file exists:"
-        log_error "  ls -lh $CONTAMINANT_FASTA"
+        log_error "bowtie2 alignment failed!"
+        log_error "Check files exist:"
+        log_error "  Reference index: ls -lh ${index_basename}.*.bt2"
+        log_error "  Contaminants: ls -lh $CONTAMINANT_FASTA"
+        return 1
+    fi
+    
+    # Check SAM file size
+    local sam_size=$(stat -f%z "$SAM_FILE" 2>/dev/null || stat -c%s "$SAM_FILE" 2>/dev/null || echo "0")
+    if [[ $sam_size -lt 100 ]]; then
+        log_error "SAM file seems empty ($sam_size bytes)"
+        log_error "This may indicate no alignments were found"
+        log_warn "Continuing anyway..."
+    else
+        log_info "SAM file size: $sam_size bytes"
+    fi
+    
+    # Convert SAM to BAM
+    log_info "Converting SAM to BAM format..."
+    if samtools view -@ 8 -bhS "$SAM_FILE" > "$BAM_FILE" 2>&1; then
+        log_info "SAM to BAM conversion completed ✓"
+    else
+        log_error "SAM to BAM conversion failed!"
+        log_error "Check SAM file: $SAM_FILE"
         return 1
     fi
     
@@ -328,10 +347,6 @@ main() {
     # Generate statistics
     log_info "Generating BAM statistics..."
     samtools idxstats "$BAM_FILE" > "${OUTPUT_PREFIX}.idxstats" 2>&1
-    
-    # Export to SAM for inspection
-    log_info "Exporting to SAM format..."
-    samtools view -h "$BAM_FILE" > "$SAM_FILE" 2>&1
     log_info ""
     
     # STEP 2: Convert BAM to BED
